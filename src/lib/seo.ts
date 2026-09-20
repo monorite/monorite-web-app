@@ -46,7 +46,12 @@ export function buildMetadata({
     title: fullTitle,
     description: desc,
     keywords: Array.from(new Set([...(keywords ?? []), ...DEFAULT_KEYWORDS])),
-    alternates: { canonical: url },
+    // A noindex page must not declare a canonical. Without this, the
+    // not-found branches below (which call buildMetadata with no `path`)
+    // fell back to path = "" and emitted the *homepage* as their canonical
+    // — telling search engines a missing page is the homepage, which
+    // directly contradicts the noindex sitting next to it.
+    ...(noIndex ? {} : { alternates: { canonical: url } }),
     robots: noIndex ? { index: false, follow: false } : { index: true, follow: true },
     openGraph: {
       title: fullTitle,
@@ -70,6 +75,10 @@ export function buildOrganizationJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
+    // Stable @id so other nodes (see buildWebSiteJsonLd) can point at this
+    // exact entity instead of repeating its details as a second, unlinked
+    // copy. Structural only — no business fact is asserted by an @id.
+    "@id": `${site.url}/#organization`,
     name: site.name,
     legalName: site.legalName,
     description: site.description,
@@ -86,6 +95,28 @@ export function buildOrganizationJsonLd() {
     },
     sameAs: Object.values(site.social),
     foundingDate: String(site.founded),
+  };
+}
+
+/** schema.org WebSite JSON-LD, rendered once in the root layout alongside
+ * the organization node. It states only the site's name and URL — both
+ * verified — and points `publisher` at the organization entity by @id
+ * rather than restating its details.
+ *
+ * Deliberately omitted:
+ * - `potentialAction`/SearchAction: the site has no search endpoint, and
+ *   declaring one that does not exist is a false capability claim.
+ * - a regional `inLanguage` variant: the two-market (India/Australia)
+ *   locale question is unresolved, so nothing is asserted here beyond the
+ *   existing <html lang="en">. */
+export function buildWebSiteJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${site.url}/#website`,
+    name: site.name,
+    url: site.url,
+    publisher: { "@id": `${site.url}/#organization` },
   };
 }
 

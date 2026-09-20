@@ -7,7 +7,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "Not every business needs AI on day one. Here's how to tell when manual processes have actually become the bottleneck.",
     date: "2026-06-12",
-    readingTime: "6 min read",
+    readingTime: "1 min read",
     category: "Strategy",
     content: [
       "AI automation works best when it removes real friction, not when it's added for its own sake. Before recommending any technology, we look for a handful of consistent signals.",
@@ -23,7 +23,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "The most expensive mistake in automation isn't a bug. It's automating the wrong process perfectly.",
     date: "2026-05-02",
-    readingTime: "5 min read",
+    readingTime: "1 min read",
     category: "Process",
     content: [
       "It's tempting to jump straight to tools: 'we need a chatbot' or 'we need an app.' But software built on top of a broken process just makes the broken process faster.",
@@ -38,7 +38,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "A practical, non-hype breakdown of where AI voice agents genuinely help service businesses today.",
     date: "2026-03-18",
-    readingTime: "7 min read",
+    readingTime: "1 min read",
     category: "AI & Automation",
     content: [
       "AI call assistants have gotten good enough to handle the bulk of routine inbound calls for service businesses: answering questions about hours and pricing, checking availability, and booking appointments.",

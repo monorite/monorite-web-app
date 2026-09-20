@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 export const metadata = buildMetadata({
   title: "AI Phone Receptionist for Trades — Melbourne",
   description:
-    "Monorite's AI phone receptionist for Melbourne trades. Answers after-hours calls, tells emergencies from routine bookings, never leaves a caller with silence.",
+    "Monorite's AI phone receptionist for Melbourne trades, now in pilot. Tells a gas leak from a burst pipe from a routine booking. No caller left in silence.",
   path: "/ai-receptionist",
 });
 

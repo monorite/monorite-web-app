@@ -10,6 +10,14 @@ import Badge from "@/components/ui/Badge";
 import Reveal from "@/components/ui/Reveal";
 import CTASection from "@/components/sections/CTASection";
 
+// Every valid slug is known at build time (generateStaticParams below), so
+// anything else genuinely does not exist. Without this, Next's default
+// dynamicParams: true rendered unknown slugs on demand and Vercel cached
+// the result as HTTP 200 — a soft 404. notFound() below still ran and set
+// noindex, but the status line said "this page is fine", which is what
+// Search Console reports as a Soft 404. This makes unknown slugs a real 404.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
 }
@@ -18,7 +26,7 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   const project = getProjectBySlug(params.slug);
   if (!project) return buildMetadata({ title: "Case study not found", noIndex: true });
   return buildMetadata({
-    title: `${project.client}: ${project.title}`,
+    title: project.seoTitle ?? `${project.client}: ${project.title}`,
     description: project.summary,
     path: `/work/${project.slug}`,
   });

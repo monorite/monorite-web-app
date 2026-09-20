@@ -3,6 +3,7 @@ import type { Project } from "@/types";
 export const projects: Project[] = [
   {
     slug: "vista-legal-website",
+    seoTitle: "Law Firm Website Case Study — Vista Legal",
     client: "Vista Legal",
     industry: "Legal",
     title: "A complete, search-ready website for a Bengaluru law firm",
@@ -57,6 +58,7 @@ export const projects: Project[] = [
   },
   {
     slug: "kebab-knights-website",
+    seoTitle: "Restaurant Website Case Study — Kebab Knights",
     client: "Kebab Knights",
     industry: "Food & Hospitality",
     title: "A late-night, mobile-first website for Melbourne's favourite kebab spot",
@@ -110,6 +112,7 @@ export const projects: Project[] = [
   },
   {
     slug: "cable-pulse-crm",
+    seoTitle: "Cable Operator Billing App — Cable Pulse CRM",
     client: "Cable Pulse CRM",
     industry: "Cable & Internet Operators",
     title: "Subscriber management and billing built for how operators actually work",
@@ -167,6 +170,7 @@ export const projects: Project[] = [
   },
   {
     slug: "rummy-score-tracker",
+    seoTitle: "Offline Score Tracker App — Rummy Score Tracker",
     client: "Rummy Score Tracker",
     industry: "Consumer Apps",
     title: "A fast, offline scorekeeper for card game nights",

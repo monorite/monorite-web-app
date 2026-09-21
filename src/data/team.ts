@@ -1,7 +1,5 @@
 /**
- * Founders shown in the homepage "Studio" section. imageSrc is null until a
- * real photo is dropped into /public/images/team — the section renders a
- * grayscale monogram placeholder in the meantime instead of breaking.
+ * Founders shown in the homepage "Studio" section.
  */
 export interface TeamMember {
   name: string;
@@ -13,6 +11,10 @@ export interface TeamMember {
   focus: string;
   imageSrc: string | null;
   imageAlt: string;
+  /** Tailwind object-position class for portrait framing. Defaults to
+   * object-center — use object-top (etc.) when the source photo is a
+   * full-body shot that would otherwise crop the face out. */
+  imagePosition?: string;
 }
 
 export const team: TeamMember[] = [
@@ -29,7 +31,8 @@ export const team: TeamMember[] = [
     role: "Co-founder",
     credentials: "4+ yrs · Java, Spring, AWS",
     focus: "Backend systems, microservices, and the cloud infrastructure everything runs on.",
-    imageSrc: null,
+    imageSrc: "/images/team/Rahul-1.jpg",
     imageAlt: "Rahul Yellapu, co-founder of Monorite",
+    imagePosition: "object-top",
   },
 ];

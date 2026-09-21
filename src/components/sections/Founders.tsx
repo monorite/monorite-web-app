@@ -138,7 +138,7 @@ function FounderPortrait({
             alt={member.imageAlt}
             fill
             sizes="(min-width: 768px) 25vw, 50vw"
-            className="object-cover"
+            className={cn("object-cover", member.imagePosition ?? "object-center")}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(200deg,#1c1c1f,#101012)]">

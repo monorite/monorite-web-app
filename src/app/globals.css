@@ -119,6 +119,168 @@
     text-wrap: balance;
   }
 
+  /* ---------------------------------------------------------------------
+     Above-the-fold entrance reveals (see components/ui/Reveal.tsx).
+
+     These run in CSS rather than Framer Motion for one specific reason:
+     Framer Motion serialises its `initial` prop into an inline style during
+     SSR, so every above-the-fold element — including the homepage <h1> —
+     was shipped in the server HTML as style="opacity:0". Nothing became
+     visible until ~228KB of JS had downloaded, parsed and hydrated, which
+     put first paint of the LCP element behind the entire JS critical path.
+
+     The timing here is a deliberate 1:1 match with the Framer Motion config
+     it replaces (0.7s, cubic-bezier(0.16, 1, 0.3, 1), 20px rise, 8px blur),
+     so the animation looks identical — only its trigger has changed.
+
+     Two safety properties this has that the old version did not:
+       - it fails OPEN. If the stylesheet never loads, the element has no
+         opacity rule at all and is simply visible. The inline opacity:0 it
+         replaces failed CLOSED — no JS meant permanently invisible content.
+       - the global prefers-reduced-motion rule above collapses
+         animation-duration to 0.001ms; combined with `both`, the element
+         lands on its final visible state immediately.
+
+     Scroll-triggered reveals (Reveal's default whileInView path) are
+     deliberately left on Framer Motion: they are below the fold, are never
+     the LCP element, and converting them would mean reimplementing
+     IntersectionObserver for no measurable gain.
+     --------------------------------------------------------------------- */
+  @keyframes reveal-rise {
+    from {
+      opacity: 0;
+      transform: translateY(var(--reveal-y, 20px));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes reveal-rise-blur {
+    from {
+      opacity: 0;
+      transform: translateY(var(--reveal-y, 20px));
+      filter: blur(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+
+  .reveal-on-mount {
+    animation: reveal-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0s)
+      both;
+  }
+
+  .reveal-on-mount-blur {
+    animation: reveal-rise-blur 0.7s cubic-bezier(0.16, 1, 0.3, 1)
+      var(--reveal-delay, 0s) both;
+  }
+
+  /* ---------------------------------------------------------------------
+     Branded intro overlay (see components/ui/Preloader.tsx).
+
+     Previously a Framer Motion client component mounted from a layout
+     effect, which meant it only appeared AFTER the JS bundle had hydrated
+     — despite its own docstring describing it as "shown on first paint".
+     That ordering became actively harmful once the hero started painting
+     from HTML: content would appear, then get covered by a late-arriving
+     overlay, then be revealed again.
+
+     Rendering it server-side and dismissing it in CSS fixes both halves:
+     it covers from the genuine first paint (so there is no flash), and it
+     clears itself on a fixed ~700ms timeline without waiting for any
+     JavaScript. The choreography (mark, wordmark, rule) is preserved,
+     compressed from the previous ~1600ms total.
+
+     prefers-reduced-motion: the global rule above collapses every duration
+     to 0.001ms, so the overlay resolves to hidden immediately — matching
+     the old component's explicit reduced-motion skip.
+     --------------------------------------------------------------------- */
+  @keyframes preloader-out {
+    0%,
+    64% {
+      opacity: 1;
+      visibility: visible;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  @keyframes preloader-mark {
+    from {
+      opacity: 0;
+      transform: scale(0.6) rotate(-8deg);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+  }
+
+  @keyframes preloader-glow {
+    0%,
+    100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.9;
+    }
+  }
+
+  @keyframes preloader-word {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes preloader-rule {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .preloader {
+    /* pointer-events:none throughout, so the overlay can never swallow a
+       click on the content it is briefly covering. */
+    pointer-events: none;
+    animation: preloader-out 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .preloader-mark {
+    animation: preloader-mark 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .preloader-glow {
+    animation: preloader-glow 1.6s ease-in-out infinite;
+  }
+
+  .preloader-word {
+    animation: preloader-word 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+  }
+
+  .preloader-rule {
+    animation: preloader-rule 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  }
+
+  /* Repeat visits within the same tab session: the blocking inline script in
+     layout.tsx stamps this attribute before first paint, so the overlay is
+     never rendered visibly a second time. */
+  :root[data-preloader="seen"] .preloader {
+    display: none;
+  }
+
   /* Standard visually-hidden technique: removes content from sight without
      display:none (which some bots' form-fillers skip) and without pushing
      the element far off-canvas (which can create phantom horizontal

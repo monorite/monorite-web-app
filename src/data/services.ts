@@ -39,9 +39,9 @@ export const services: Service[] = [
       "Answers customer calls and messages instantly, and puts AI to work internally too.",
     description:
       "Your AI assistant answers customer calls and messages instantly, understands your business's real hours, services, and policies, and captures bookings. Every enquiry is sent straight to you, day or night. The same approach extends internally: assistants trained on your documents and policies, and document intelligence for contracts, invoices, and forms.",
-    seoTitle: "AI Receptionist & Chat Assistant for Trades",
+    seoTitle: "AI Chat & Voice Assistants for Trades",
     seoDescription:
-      "Monorite's AI phone receptionist and chat assistant for trades and local businesses. Answers every call and message, captures bookings, never misses a lead.",
+      "AI assistants for Melbourne trades and local businesses: web chat, SMS and voice in one system, plus internal assistants trained on your own documents.",
     outcomes: ["Zero missed calls", "Faster response times", "AI applied wherever it earns its keep"],
     bullets: [
       "Trained on your actual services, pricing, and availability",

@@ -25,6 +25,13 @@ export interface Project {
   client: string;
   industry: string;
   title: string;
+  /** Short, keyword-precise <title> for search snippets. `title` is a full
+   * editorial sentence (correct for the on-page H1) which, once prefixed
+   * with the client and suffixed with the brand, ran 80-102 chars and was
+   * truncated by Google at ~60. Mirrors the same seoTitle/seoDescription
+   * split already used on Service above. Optional: falls back to the
+   * previous "{client}: {title}" construction when absent. */
+  seoTitle?: string;
   summary: string;
   challenge: string;
   solution: string;

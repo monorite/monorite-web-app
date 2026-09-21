@@ -7,6 +7,14 @@ import Container from "@/components/ui/Container";
 import Badge from "@/components/ui/Badge";
 import Reveal from "@/components/ui/Reveal";
 
+// Every valid slug is known at build time (generateStaticParams below), so
+// anything else genuinely does not exist. Without this, Next's default
+// dynamicParams: true rendered unknown slugs on demand and Vercel cached
+// the result as HTTP 200 — a soft 404. notFound() below still ran and set
+// noindex, but the status line said "this page is fine", which is what
+// Search Console reports as a Soft 404. This makes unknown slugs a real 404.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
 }

@@ -14,16 +14,34 @@ interface PageSeoInput {
    * description (already sent via openGraph/twitter below) are what
    * actually drive what shows up when a link is shared. */
   keywords?: string[];
+  /** Replaces the default social card when a page has its own image. */
+  image?: {
+    url: string;
+    width: number;
+    height: number;
+    alt: string;
+    type?: string;
+  };
 }
 
+/** Default social card for every page that does not pass its own image.
+ * Declared size matches the file on disk. */
+const DEFAULT_OG_IMAGE = {
+  url: "/images/brand/monorite-og.png",
+  width: 1200,
+  height: 630,
+  alt: "Monorite - Where Ideas Become Reality",
+  type: "image/png",
+};
+
 const DEFAULT_KEYWORDS = [
-  "AI automation agency Melbourne",
-  "AI phone receptionist for trades",
-  "AI receptionist for tradies",
+  "AI automation",
+  "AI phone receptionist",
   "website design for local business",
   "AI chat assistant",
-  "custom business software Melbourne",
-  "workflow automation agency",
+  "custom business software",
+  "workflow automation",
+  "Rajahmundry",
   site.name,
 ];
 
@@ -37,10 +55,12 @@ export function buildMetadata({
   path = "",
   noIndex,
   keywords,
+  image,
 }: PageSeoInput): Metadata {
   const url = `${site.url}${path}`;
   const fullTitle = title === site.name ? title : `${title} | ${site.name}`;
   const desc = description ?? site.description;
+  const socialImage = image ?? DEFAULT_OG_IMAGE;
 
   return {
     title: fullTitle,
@@ -59,11 +79,13 @@ export function buildMetadata({
       url,
       siteName: site.name,
       type: "website",
+      images: [socialImage],
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description: desc,
+      images: [socialImage],
     },
   };
 }
@@ -84,7 +106,7 @@ export function buildOrganizationJsonLd() {
     description: site.description,
     url: site.url,
     email: site.email,
-    telephone: site.phone,
+    ...(site.phone ? { telephone: site.phone } : {}),
     address: {
       "@type": "PostalAddress",
       streetAddress: site.address.street,
@@ -95,6 +117,7 @@ export function buildOrganizationJsonLd() {
     },
     sameAs: Object.values(site.social),
     foundingDate: String(site.founded),
+    logo: `${site.url}/images/brand/monorite-logo-1.png`,
   };
 }
 
@@ -106,9 +129,8 @@ export function buildOrganizationJsonLd() {
  * Deliberately omitted:
  * - `potentialAction`/SearchAction: the site has no search endpoint, and
  *   declaring one that does not exist is a false capability claim.
- * - a regional `inLanguage` variant: the two-market (India/Australia)
- *   locale question is unresolved, so nothing is asserted here beyond the
- *   existing <html lang="en">. */
+ * - a regional `inLanguage` variant: the site is English (`<html lang="en">`).
+ *   The business address is Rajahmundry; that is not a second language. */
 export function buildWebSiteJsonLd() {
   return {
     "@context": "https://schema.org",
@@ -136,7 +158,8 @@ export function buildFaqJsonLd(items: { q: string; a: string }[]) {
 }
 
 /** schema.org Service JSON-LD for a service detail page, linking back to the
- * agency as `provider` so it can back a service-area rich result. */
+ * agency as `provider`. No city `areaServed`: the office city is the
+ * organization address, not a claim that delivery is limited to that city. */
 export function buildServiceJsonLd(service: { name: string; description: string; slug: string }) {
   return {
     "@context": "https://schema.org",
@@ -145,7 +168,6 @@ export function buildServiceJsonLd(service: { name: string; description: string;
     description: service.description,
     url: `${site.url}/services/${service.slug}`,
     provider: { "@type": "ProfessionalService", name: site.name, url: site.url },
-    areaServed: { "@type": "City", name: site.address.suburb },
   };
 }
 
@@ -180,7 +202,15 @@ export function buildBlogPostingJsonLd(post: {
     datePublished: post.date,
     url: `${site.url}/blog/${post.slug}`,
     author: { "@type": "Organization", name: site.name, url: site.url },
-    publisher: { "@type": "Organization", name: site.name, url: site.url },
+    publisher: {
+      "@type": "Organization",
+      name: site.name,
+      url: site.url,
+      logo: {
+        "@type": "ImageObject",
+        url: `${site.url}/images/brand/monorite-logo-1.png`,
+      },
+    },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${site.url}/blog/${post.slug}` },
   };
 }

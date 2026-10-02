@@ -20,7 +20,7 @@ export const services: Service[] = [
       "A website that shows up on Google, loads fast on every device, and turns a visitor into an enquiry. It's wired into the same CRM, call assistant, and booking system as everything else we build for you.",
     seoTitle: "Website Design for Trades & Local Business",
     seoDescription:
-      "SEO-ready websites for trades, clinics, and local businesses in Melbourne. Fast on every device, built to bring in enquiries, not just look good.",
+      "SEO-ready websites for trades, clinics, and local businesses. Fast on every device, built to bring in enquiries, not just look good.",
     outcomes: ["More inbound enquiries", "Higher search visibility", "One connected system, not a standalone brochure site"],
     bullets: [
       "Fast on every phone, tablet, and screen",
@@ -41,7 +41,7 @@ export const services: Service[] = [
       "Your AI assistant answers customer calls and messages instantly, understands your business's real hours, services, and policies, and captures bookings. Every enquiry is sent straight to you, day or night. The same approach extends internally: assistants trained on your documents and policies, and document intelligence for contracts, invoices, and forms.",
     seoTitle: "AI Chat & Voice Assistants for Trades",
     seoDescription:
-      "AI assistants for Melbourne trades and local businesses: web chat, SMS and voice in one system, plus internal assistants trained on your own documents.",
+      "AI assistants for trades and local businesses: web chat, SMS and voice in one system, plus internal assistants trained on your own documents.",
     outcomes: ["Zero missed calls", "Faster response times", "AI applied wherever it earns its keep"],
     bullets: [
       "Trained on your actual services, pricing, and availability",

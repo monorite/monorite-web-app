@@ -20,9 +20,9 @@ import Testimonials from "@/components/sections/Testimonials";
 import CTASection from "@/components/sections/CTASection";
 
 export const metadata = buildMetadata({
-  title: "Melbourne AI Automation Agency for Trades",
+  title: "Websites, AI Assistants, and Custom Software",
   description:
-    "Monorite is a Melbourne AI automation agency for trades, clinics, and local businesses: websites, AI receptionists, and workflow automation in one system.",
+    "Monorite, based in Rajahmundry, Andhra Pradesh, India, builds websites, AI phone and chat assistants, custom software, and the systems that connect them.",
   path: "/",
 });
 

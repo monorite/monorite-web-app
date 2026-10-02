@@ -48,13 +48,15 @@ export default function ContactPage() {
               <Mail className="h-5 w-5 text-accent-soft" />
               {site.email}
             </a>
-            <a
-              href={`tel:${site.phone.replace(/[^0-9+]/g, "")}`}
-              className="flex items-center gap-3 text-ink-muted transition-colors hover:text-ink"
-            >
-              <Phone className="h-5 w-5 text-accent-soft" />
-              {site.phone}
-            </a>
+            {site.phone ? (
+              <a
+                href={`tel:${site.phone.replace(/[^0-9+]/g, "")}`}
+                className="flex items-center gap-3 text-ink-muted transition-colors hover:text-ink"
+              >
+                <Phone className="h-5 w-5 text-accent-soft" />
+                {site.phone}
+              </a>
+            ) : null}
             <div className="flex items-center gap-3 text-ink-muted">
               <MapPin className="h-5 w-5 text-accent-soft" />
               {site.location}

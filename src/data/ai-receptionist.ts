@@ -9,21 +9,21 @@ export const receptionistTiers: ReceptionistTier[] = [
     label: "Life-safety",
     example: "Gas leak, smoke, electric shock, injury",
     response:
-      "The agent's first response is always \"if anyone is in danger, hang up and call 000 now,\" before anything else. It still captures details and notifies the tradie.",
+      "The agent's first response is always \"if anyone is in danger, contact your local emergency services immediately,\" before anything else. It still captures details and notifies the business.",
   },
   {
     icon: PhoneCall,
     label: "Urgent trade job",
     example: "Burst pipe, no water, no power",
     response:
-      "Triggers a live transfer to the tradie's mobile. If unanswered within 20 seconds, the agent takes a detailed message, sends an urgent SMS, and tells the caller when to expect a callback. Never silence.",
+      "Triggers a live transfer to the business owner's or team's mobile. If unanswered within 20 seconds, the agent takes a detailed message, sends an urgent SMS, and tells the caller when to expect a callback. Never silence.",
   },
   {
     icon: Ear,
     label: "Standard",
     example: "Routine booking, general enquiry",
     response:
-      "Normal capture flow: name, job type, address, and preferred time, confirmed with the caller and sent straight to the tradie.",
+      "Normal capture flow: name, job type, address, and preferred time, confirmed with the caller and sent straight to the business.",
   },
 ];
 

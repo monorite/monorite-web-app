@@ -32,17 +32,19 @@ export const site = {
     "Monorite helps trades, clinics, and local businesses still running on phone calls and spreadsheets get online, automate the busywork, and put AI voice and chat agents to work: websites, call assistants, custom CRMs, and the systems to run them.",
   url: resolveSiteUrl(),
   email: "support@monorite.com",
-  phone: "0468 588 669",
+  /** Public phone. Null until an India number is confirmed. The previous
+   * Australian mobile is not used as the Rajahmundry contact. */
+  phone: null as string | null,
   // Structured so it can back both the display string (`location`) and
   // schema.org PostalAddress in JSON-LD, instead of only a freeform string.
   address: {
-    street: "17A Augusta Crescent",
-    suburb: "Sunshine North",
-    state: "VIC",
-    postcode: "3020",
-    country: "AU",
+    street: "3-13-126/1, 2nd Floor, Balajipeta",
+    suburb: "Rajahmundry",
+    state: "Andhra Pradesh",
+    postcode: "533101",
+    country: "IN",
   },
-  location: "17A Augusta Crescent, Sunshine North VIC 3020",
+  location: "3-13-126/1, 2nd Floor, Balajipeta, Rajahmundry - 533101, Andhra Pradesh, India",
   /** What the team actually builds with — surfaced to the chat assistant's
    * knowledge base so it can answer capability questions ("do you build
    * mobile apps?") without guessing. Not the specific LLM/vendor stack

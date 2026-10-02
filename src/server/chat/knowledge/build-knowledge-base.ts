@@ -22,7 +22,7 @@ export function buildKnowledgeBase(): KnowledgeChunk[] {
   chunks.push({
     id: "company",
     category: "company",
-    text: `${site.name}: ${site.description} Contact: ${site.email} / ${site.phone}. Based at ${site.location}.`,
+    text: `${site.name}: ${site.description} Contact: ${site.phone ? `${site.email} / ${site.phone}` : site.email}. Based at ${site.location}.`,
     keywords: keywordsFrom(site.name, site.description, "contact", "email", "phone", "location", "address"),
   });
 

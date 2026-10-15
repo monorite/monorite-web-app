@@ -32,8 +32,10 @@ export const site = {
     "Monorite helps trades, clinics, and local businesses still running on phone calls and spreadsheets get online, automate the busywork, and put AI voice and chat agents to work: websites, call assistants, custom CRMs, and the systems to run them.",
   url: resolveSiteUrl(),
   email: "support@monorite.com",
-  /** Public phone. Null until an India number is confirmed. The previous
-   * Australian mobile is not used as the Rajahmundry contact. */
+  /** Organization phone. Null until an India number is confirmed.
+   * The Australian mobile is a contact-page detail for visitors outside
+   * India (see contactRegions). It is not this location's phone, and it
+   * is not added to Organization structured data. */
   phone: null as string | null,
   // Structured so it can back both the display string (`location`) and
   // schema.org PostalAddress in JSON-LD, instead of only a freeform string.

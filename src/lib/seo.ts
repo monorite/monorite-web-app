@@ -22,6 +22,9 @@ interface PageSeoInput {
     alt: string;
     type?: string;
   };
+  /** Regional alternates for this page. Values are paths. The canonical
+   * stays `path`; these do not replace it. */
+  languages?: Record<string, string>;
 }
 
 /** Default social card for every page that does not pass its own image.
@@ -56,6 +59,7 @@ export function buildMetadata({
   noIndex,
   keywords,
   image,
+  languages,
 }: PageSeoInput): Metadata {
   const url = `${site.url}${path}`;
   const fullTitle = title === site.name ? title : `${title} | ${site.name}`;
@@ -71,7 +75,23 @@ export function buildMetadata({
     // fell back to path = "" and emitted the *homepage* as their canonical
     // — telling search engines a missing page is the homepage, which
     // directly contradicts the noindex sitting next to it.
-    ...(noIndex ? {} : { alternates: { canonical: url } }),
+    ...(noIndex
+      ? {}
+      : {
+          alternates: {
+            canonical: url,
+            ...(languages
+              ? {
+                  languages: Object.fromEntries(
+                    Object.entries(languages).map(([code, languagePath]) => [
+                      code,
+                      `${site.url}${languagePath}`,
+                    ]),
+                  ),
+                }
+              : {}),
+          },
+        }),
     robots: noIndex ? { index: false, follow: false } : { index: true, follow: true },
     openGraph: {
       title: fullTitle,
@@ -90,17 +110,24 @@ export function buildMetadata({
   };
 }
 
-/** schema.org Organization + LocalBusiness JSON-LD, rendered once in the
- * root layout. Backs local-search rich results (knowledge panel, map pack)
- * with the same NAP (name/address/phone) data used on the contact page. */
+/** Stable id for the one Organization entity. Service and blog nodes
+ * point here instead of repeating a second, unlinked organization. */
+export function organizationId(): string {
+  return `${site.url}/#organization`;
+}
+
+/** schema.org Organization JSON-LD, rendered once in the root layout.
+ * The address is the Rajahmundry business location. The Australian
+ * contact address is intentionally absent: it is not a confirmed office,
+ * and it is not a second location or LocalBusiness entity. */
 export function buildOrganizationJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    // Stable @id so other nodes (see buildWebSiteJsonLd) can point at this
-    // exact entity instead of repeating its details as a second, unlinked
-    // copy. Structural only — no business fact is asserted by an @id.
-    "@id": `${site.url}/#organization`,
+    // Stable @id so other nodes can point at this exact entity instead of
+    // repeating its details as a second, unlinked copy. Structural only —
+    // no business fact is asserted by an @id.
+    "@id": organizationId(),
     name: site.name,
     legalName: site.legalName,
     description: site.description,
@@ -138,7 +165,7 @@ export function buildWebSiteJsonLd() {
     "@id": `${site.url}/#website`,
     name: site.name,
     url: site.url,
-    publisher: { "@id": `${site.url}/#organization` },
+    publisher: { "@id": organizationId() },
   };
 }
 
@@ -157,9 +184,10 @@ export function buildFaqJsonLd(items: { q: string; a: string }[]) {
   };
 }
 
-/** schema.org Service JSON-LD for a service detail page, linking back to the
- * agency as `provider`. No city `areaServed`: the office city is the
- * organization address, not a claim that delivery is limited to that city. */
+/** schema.org Service JSON-LD for a service detail page. `provider` points
+ * at the same Organization entity as the root layout. No city `areaServed`:
+ * the business location is the organization address, not a claim that
+ * delivery is limited to that city. */
 export function buildServiceJsonLd(service: { name: string; description: string; slug: string }) {
   return {
     "@context": "https://schema.org",
@@ -167,7 +195,7 @@ export function buildServiceJsonLd(service: { name: string; description: string;
     name: service.name,
     description: service.description,
     url: `${site.url}/services/${service.slug}`,
-    provider: { "@type": "ProfessionalService", name: site.name, url: site.url },
+    provider: { "@id": organizationId() },
   };
 }
 
@@ -201,16 +229,8 @@ export function buildBlogPostingJsonLd(post: {
     description: post.excerpt,
     datePublished: post.date,
     url: `${site.url}/blog/${post.slug}`,
-    author: { "@type": "Organization", name: site.name, url: site.url },
-    publisher: {
-      "@type": "Organization",
-      name: site.name,
-      url: site.url,
-      logo: {
-        "@type": "ImageObject",
-        url: `${site.url}/images/brand/monorite-logo-1.png`,
-      },
-    },
+    author: { "@id": organizationId() },
+    publisher: { "@id": organizationId() },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${site.url}/blog/${post.slug}` },
   };
 }

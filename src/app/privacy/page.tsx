@@ -10,7 +10,7 @@ export const metadata = buildMetadata({
   path: "/privacy",
 });
 
-const LAST_UPDATED = "21 August 2026";
+const LAST_UPDATED = "15 October 2026";
 
 const sections: { title: string; body: React.ReactNode }[] = [
   {
@@ -50,7 +50,13 @@ const sections: { title: string; body: React.ReactNode }[] = [
         <li>
           <strong className="text-ink">Technical data</strong> — IP address (used only for spam/abuse rate
           limiting, not stored against your identity beyond that), browser type, and basic usage data standard to
-          any web request.
+          any web request. The contact page also reads country from the hosting provider to choose which contact
+          details to show. That country is not stored.
+        </li>
+        <li>
+          <strong className="text-ink">Contact country choice</strong> — if you select India or Australia on the
+          contact page, that choice is saved in a cookie in your browser so /contact keeps showing it. The cookie
+          is only used for that display. It is not used for advertising.
         </li>
         <li>
           <strong className="text-ink">Analytics</strong> — general usage data (pages visited, how you got here,

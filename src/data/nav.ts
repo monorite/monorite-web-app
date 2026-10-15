@@ -26,6 +26,8 @@ export const footerNav: { title: string; links: NavItem[] }[] = [
   {
     title: "Services",
     links: [
+      { label: "AI Solutions", href: "/services/ai-solutions" },
+      { label: "Business Software", href: "/services/business-software" },
       { label: "Website & Online Presence", href: "/services/website-online-presence" },
       { label: "AI Assistants", href: "/services/ai-assistants" },
       { label: "Custom Business Software", href: "/services/custom-business-software" },

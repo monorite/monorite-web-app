@@ -31,9 +31,10 @@ const mono = Space_Mono({
   display: "swap",
 });
 
-// The root layout's metadata is inherited by every route, so two fields are
-// deliberately stripped from it. Every real page sets both itself via
-// buildMetadata, so in practice this only changes /_not-found.
+// The root layout's metadata is inherited by every route, so canonical,
+// robots, and the Open Graph URL are stripped from it. Every indexable
+// page sets those itself via buildMetadata, so in practice this only
+// changes /_not-found.
 //
 // `alternates`: buildMetadata defaults `path` to "", so keeping it here made
 // the layout hand a *homepage* canonical to any route that doesn't set its
@@ -45,17 +46,27 @@ const mono = Space_Mono({
 // ("noindex" + "index, follow"). Google resolves that to the most
 // restrictive, so noindex won either way — but emitting a directive that
 // says the opposite of the one beside it is not something to leave in place.
+//
+// `openGraph.url`: buildMetadata sets this from `path`, which defaults to
+// the homepage. Every indexable page sets its own Open Graph URL. The
+// not-found boundary does not, so leaving this in the layout made a 404
+// advertise the homepage as its og:url. Indexable pages still emit their
+// own URL through buildMetadata.
 const {
   alternates: _rootCanonical,
   robots: _rootRobots,
+  openGraph: rootOpenGraph,
   ...rootMetadataDefaults
 } = buildMetadata({
   title: site.name,
   description: site.description,
 });
 
+const { url: _rootOpenGraphUrl, ...rootOpenGraphWithoutUrl } = rootOpenGraph ?? {};
+
 export const metadata: Metadata = {
   ...rootMetadataDefaults,
+  openGraph: rootOpenGraphWithoutUrl,
   metadataBase: new URL(site.url),
   // Empty until GOOGLE_SITE_VERIFICATION / BING_SITE_VERIFICATION are set —
   // Next omits a verification meta tag entirely when its value is

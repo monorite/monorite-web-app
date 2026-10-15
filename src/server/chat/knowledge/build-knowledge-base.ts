@@ -1,7 +1,9 @@
 import { services } from "@/data/services";
+import { serviceLandings } from "@/data/service-landings";
 import { projects } from "@/data/projects";
 import { faqContent } from "@/data/service-content";
 import { site } from "@/data/site";
+import { contactRegions } from "@/data/contact-regions";
 import { team } from "@/data/team";
 import type { KnowledgeChunk } from "../types";
 import { tokenize } from "./stopwords";
@@ -19,11 +21,26 @@ function keywordsFrom(...text: string[]): string[] {
 export function buildKnowledgeBase(): KnowledgeChunk[] {
   const chunks: KnowledgeChunk[] = [];
 
+  const australia = contactRegions.AU;
   chunks.push({
     id: "company",
     category: "company",
-    text: `${site.name}: ${site.description} Contact: ${site.email} / ${site.phone}. Based at ${site.location}.`,
-    keywords: keywordsFrom(site.name, site.description, "contact", "email", "phone", "location", "address"),
+    text: `${site.name}: ${site.description} Email: ${site.email}. The business is located at ${site.location}. For visitors outside India, the Australian contact details are ${australia.location}, phone ${australia.phone}. That Australian address is a published contact address, not a staffed office.`,
+    keywords: keywordsFrom(
+      site.name,
+      site.description,
+      site.location,
+      australia.location,
+      australia.phone ?? "",
+      "contact",
+      "email",
+      "phone",
+      "location",
+      "address",
+      "Australia",
+      "India",
+      "Rajahmundry",
+    ),
   });
 
   chunks.push({
@@ -57,6 +74,23 @@ export function buildKnowledgeBase(): KnowledgeChunk[] {
       text: `Service — ${service.name} (${service.category}): ${service.description} Includes: ${service.bullets.join("; ")}.`,
       keywords: keywordsFrom(service.name, service.category, service.shortDescription, service.bullets.join(" ")),
     });
+  }
+
+  for (const landing of serviceLandings) {
+    chunks.push({
+      id: `landing:${landing.slug}`,
+      category: "service",
+      text: landing.knowledge,
+      keywords: keywordsFrom(landing.schemaName, landing.h1, landing.description, landing.knowledge),
+    });
+    for (const faq of landing.faqs) {
+      chunks.push({
+        id: `faq:${landing.slug}:${faq.q}`,
+        category: "faq",
+        text: `Q: ${faq.q} A: ${faq.a}`,
+        keywords: keywordsFrom(faq.q, faq.a),
+      });
+    }
   }
 
   for (const project of projects) {

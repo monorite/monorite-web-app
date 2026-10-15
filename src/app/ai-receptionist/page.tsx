@@ -13,9 +13,9 @@ import { receptionistTiers, receptionistTransparencyPoints } from "@/data/ai-rec
 import { cn } from "@/lib/utils";
 
 export const metadata = buildMetadata({
-  title: "AI Phone Receptionist for Trades — Melbourne",
+  title: "AI Phone Receptionist",
   description:
-    "Monorite's AI phone receptionist for Melbourne trades, now in pilot. Tells a gas leak from a burst pipe from a routine booking. No caller left in silence.",
+    "Monorite's AI phone receptionist, now in pilot. It tells an emergency from an urgent job from a routine booking, and no caller is left in silence.",
   path: "/ai-receptionist",
 });
 
@@ -135,7 +135,7 @@ export default function AIReceptionistPage() {
                 </li>
                 <li className="flex items-start gap-3 text-sm text-ink">
                   <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent-soft" />
-                  Live-transfers to the tradie's mobile
+                  Live-transfers to the business owner's or team's mobile
                 </li>
                 <li className="flex items-start gap-3 text-sm text-ink">
                   <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent-soft" />

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { buildMetadata } from "@/lib/seo";
 import { services } from "@/data/services";
 import { projects } from "@/data/projects";
@@ -20,9 +21,9 @@ import Testimonials from "@/components/sections/Testimonials";
 import CTASection from "@/components/sections/CTASection";
 
 export const metadata = buildMetadata({
-  title: "Melbourne AI Automation Agency for Trades",
+  title: "Websites, AI Assistants, and Custom Software",
   description:
-    "Monorite is a Melbourne AI automation agency for trades, clinics, and local businesses: websites, AI receptionists, and workflow automation in one system.",
+    "Monorite, based in Rajahmundry, Andhra Pradesh, India, builds websites, AI phone and chat assistants, custom software, and the systems that connect them.",
   path: "/",
 });
 
@@ -49,6 +50,22 @@ export default function HomePage() {
               We work service by service or as a full system, starting
               wherever the friction is worst.
             </p>
+          </Reveal>
+          <Reveal delay={0.22}>
+            <nav aria-label="Service overviews" className="mt-6 flex flex-wrap gap-x-6 gap-y-3">
+              <Link
+                href="/services/ai-solutions"
+                className="text-sm font-medium text-ink underline decoration-canvas-border underline-offset-4 transition-colors hover:text-accent-soft"
+              >
+                AI Solutions
+              </Link>
+              <Link
+                href="/services/business-software"
+                className="text-sm font-medium text-ink underline decoration-canvas-border underline-offset-4 transition-colors hover:text-accent-soft"
+              >
+                Business Software
+              </Link>
+            </nav>
           </Reveal>
         </Container>
       </section>

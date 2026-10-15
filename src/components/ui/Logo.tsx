@@ -1,9 +1,8 @@
-/**
- * The Monorite mark: a rounded-square badge in a cream-to-cream tonal
- * gradient with a bold "M" monogram. Built as inline SVG (not a raster
- * image) so it stays crisp at every size it's used at — favicon, navbar,
- * footer, and the full-screen preloader.
- */
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+
+/** Official Monorite mark (the M only). The full lockup lives at
+ * /images/brand/monorite-logo.png and is too wide for these slots. */
 export default function Logo({
   size = 36,
   className,
@@ -12,36 +11,12 @@ export default function Logo({
   className?: string;
 }) {
   return (
-    <svg
+    <Image
+      src="/images/brand/monorite-logo-1.png"
+      alt="Monorite"
       width={size}
       height={size}
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      role="img"
-      aria-label="Monorite"
-    >
-      <defs>
-        <linearGradient id="monorite-mark" x1="2" y1="2" x2="38" y2="38" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#F4F3EE" />
-          <stop offset="100%" stopColor="#D8D0C3" />
-        </linearGradient>
-      </defs>
-      <rect x="1" y="1" width="38" height="38" rx="11" fill="url(#monorite-mark)" />
-      <rect x="1" y="1" width="38" height="38" rx="11" stroke="rgba(255,255,255,0.14)" />
-      <text
-        x="20"
-        y="21.5"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontFamily="var(--font-display), sans-serif"
-        fontWeight="700"
-        fontSize="20"
-        fill="#0B0B0D"
-      >
-        M
-      </text>
-    </svg>
+      className={cn("object-contain", className)}
+    />
   );
 }

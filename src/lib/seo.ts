@@ -6,6 +6,8 @@ interface PageSeoInput {
   description?: string;
   path?: string;
   noIndex?: boolean;
+  /** Use `title` as the full document title, without appending the site name. */
+  exactTitle?: boolean;
   /** Extra terms specific to this page, added on top of the site-wide
    * defaults below. No modern social platform (WhatsApp/Facebook/LinkedIn/
    * X/iMessage) reads meta keywords for link previews, and Google hasn't
@@ -14,16 +16,37 @@ interface PageSeoInput {
    * description (already sent via openGraph/twitter below) are what
    * actually drive what shows up when a link is shared. */
   keywords?: string[];
+  /** Replaces the default social card when a page has its own image. */
+  image?: {
+    url: string;
+    width: number;
+    height: number;
+    alt: string;
+    type?: string;
+  };
+  /** Regional alternates for this page. Values are paths. The canonical
+   * stays `path`; these do not replace it. */
+  languages?: Record<string, string>;
 }
 
+/** Default social card for every page that does not pass its own image.
+ * Declared size matches the file on disk. */
+const DEFAULT_OG_IMAGE = {
+  url: "/images/brand/monorite-og.png",
+  width: 1200,
+  height: 630,
+  alt: "Monorite - Where Ideas Become Reality",
+  type: "image/png",
+};
+
 const DEFAULT_KEYWORDS = [
-  "AI automation agency Melbourne",
-  "AI phone receptionist for trades",
-  "AI receptionist for tradies",
+  "AI automation",
+  "AI phone receptionist",
   "website design for local business",
   "AI chat assistant",
-  "custom business software Melbourne",
-  "workflow automation agency",
+  "custom business software",
+  "workflow automation",
+  "Rajahmundry",
   site.name,
 ];
 
@@ -36,11 +59,15 @@ export function buildMetadata({
   description,
   path = "",
   noIndex,
+  exactTitle,
   keywords,
+  image,
+  languages,
 }: PageSeoInput): Metadata {
   const url = `${site.url}${path}`;
-  const fullTitle = title === site.name ? title : `${title} | ${site.name}`;
+  const fullTitle = exactTitle || title === site.name ? title : `${title} | ${site.name}`;
   const desc = description ?? site.description;
+  const socialImage = image ?? DEFAULT_OG_IMAGE;
 
   return {
     title: fullTitle,
@@ -51,40 +78,68 @@ export function buildMetadata({
     // fell back to path = "" and emitted the *homepage* as their canonical
     // — telling search engines a missing page is the homepage, which
     // directly contradicts the noindex sitting next to it.
-    ...(noIndex ? {} : { alternates: { canonical: url } }),
+    ...(noIndex
+      ? {}
+      : {
+          alternates: {
+            canonical: url,
+            ...(languages
+              ? {
+                  languages: Object.fromEntries(
+                    Object.entries(languages).map(([code, languagePath]) => [
+                      code,
+                      `${site.url}${languagePath}`,
+                    ]),
+                  ),
+                }
+              : {}),
+          },
+        }),
     robots: noIndex ? { index: false, follow: false } : { index: true, follow: true },
     openGraph: {
       title: fullTitle,
       description: desc,
-      url,
+      // A noindex response has no canonical URL of its own. Omitting
+      // `url` here stops that response from advertising the homepage,
+      // which is what `path` falls back to when a caller passes none.
+      ...(noIndex ? {} : { url }),
       siteName: site.name,
       type: "website",
+      images: [socialImage],
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description: desc,
+      images: [socialImage],
     },
   };
 }
 
-/** schema.org Organization + LocalBusiness JSON-LD, rendered once in the
- * root layout. Backs local-search rich results (knowledge panel, map pack)
- * with the same NAP (name/address/phone) data used on the contact page. */
+/** Stable id for the one Organization entity. Service and blog nodes
+ * point here instead of repeating a second, unlinked organization. */
+export function organizationId(): string {
+  return `${site.url}/#organization`;
+}
+
+/** schema.org Organization JSON-LD, rendered once in the root layout.
+ * The address is the Rajahmundry business location. The Australian
+ * contact address is intentionally absent: it is not a confirmed office,
+ * and it is not a second location or LocalBusiness entity. */
 export function buildOrganizationJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    // Stable @id so other nodes (see buildWebSiteJsonLd) can point at this
-    // exact entity instead of repeating its details as a second, unlinked
-    // copy. Structural only — no business fact is asserted by an @id.
-    "@id": `${site.url}/#organization`,
+    // Stable @id so other nodes can point at this exact entity instead of
+    // repeating its details as a second, unlinked copy. Structural only —
+    // no business fact is asserted by an @id.
+    "@id": organizationId(),
     name: site.name,
     legalName: site.legalName,
     description: site.description,
     url: site.url,
     email: site.email,
-    telephone: site.phone,
+    ...(site.phone ? { telephone: site.phone } : {}),
     address: {
       "@type": "PostalAddress",
       streetAddress: site.address.street,
@@ -95,6 +150,7 @@ export function buildOrganizationJsonLd() {
     },
     sameAs: Object.values(site.social),
     foundingDate: String(site.founded),
+    logo: `${site.url}/images/brand/monorite-logo-1.png`,
   };
 }
 
@@ -106,9 +162,8 @@ export function buildOrganizationJsonLd() {
  * Deliberately omitted:
  * - `potentialAction`/SearchAction: the site has no search endpoint, and
  *   declaring one that does not exist is a false capability claim.
- * - a regional `inLanguage` variant: the two-market (India/Australia)
- *   locale question is unresolved, so nothing is asserted here beyond the
- *   existing <html lang="en">. */
+ * - a regional `inLanguage` variant: the site is English (`<html lang="en">`).
+ *   The business address is Rajahmundry; that is not a second language. */
 export function buildWebSiteJsonLd() {
   return {
     "@context": "https://schema.org",
@@ -116,7 +171,7 @@ export function buildWebSiteJsonLd() {
     "@id": `${site.url}/#website`,
     name: site.name,
     url: site.url,
-    publisher: { "@id": `${site.url}/#organization` },
+    publisher: { "@id": organizationId() },
   };
 }
 
@@ -135,8 +190,10 @@ export function buildFaqJsonLd(items: { q: string; a: string }[]) {
   };
 }
 
-/** schema.org Service JSON-LD for a service detail page, linking back to the
- * agency as `provider` so it can back a service-area rich result. */
+/** schema.org Service JSON-LD for a service detail page. `provider` points
+ * at the same Organization entity as the root layout. No city `areaServed`:
+ * the business location is the organization address, not a claim that
+ * delivery is limited to that city. */
 export function buildServiceJsonLd(service: { name: string; description: string; slug: string }) {
   return {
     "@context": "https://schema.org",
@@ -144,8 +201,7 @@ export function buildServiceJsonLd(service: { name: string; description: string;
     name: service.name,
     description: service.description,
     url: `${site.url}/services/${service.slug}`,
-    provider: { "@type": "ProfessionalService", name: site.name, url: site.url },
-    areaServed: { "@type": "City", name: site.address.suburb },
+    provider: { "@id": organizationId() },
   };
 }
 
@@ -179,8 +235,8 @@ export function buildBlogPostingJsonLd(post: {
     description: post.excerpt,
     datePublished: post.date,
     url: `${site.url}/blog/${post.slug}`,
-    author: { "@type": "Organization", name: site.name, url: site.url },
-    publisher: { "@type": "Organization", name: site.name, url: site.url },
+    author: { "@id": organizationId() },
+    publisher: { "@id": organizationId() },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${site.url}/blog/${post.slug}` },
   };
 }

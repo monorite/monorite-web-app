@@ -6,17 +6,6 @@ export const CONTACT_REGION_COOKIE = "monorite-contact-country";
 
 export const CONTACT_REGION_MAX_AGE = 60 * 60 * 24 * 365;
 
-/**
- * Regional alternates for the contact pages. Paths only — buildMetadata
- * prefixes the site origin. x-default is the Australian page because a
- * failed country lookup shows Australian contact details.
- */
-export const contactLanguageAlternates: Record<string, string> = {
-  "en-AU": "/contact/australia",
-  "en-IN": "/contact/india",
-  "x-default": "/contact/australia",
-};
-
 export type ContactRegionId = "IN" | "AU";
 
 export interface ContactRegion {
@@ -35,6 +24,10 @@ export interface ContactRegion {
   mapTitle: string;
   /** Rajahmundry is the business location. Sunshine North is not. */
   isBusinessLocation: boolean;
+  /** Full document title. Not suffixed again with the site name. */
+  documentTitle: string;
+  metaDescription: string;
+  heading: string;
 }
 
 export const contactRegions: Record<ContactRegionId, ContactRegion> = {
@@ -49,6 +42,9 @@ export const contactRegions: Record<ContactRegionId, ContactRegion> = {
     location: site.location,
     mapTitle: `Map of ${site.name} in Rajahmundry`,
     isBusinessLocation: true,
+    documentTitle: "Contact Monorite India | Rajahmundry, Andhra Pradesh",
+    metaDescription: `Contact ${site.name} at the business address in Rajahmundry, Andhra Pradesh.`,
+    heading: "Contact us in Rajahmundry",
   },
   AU: {
     id: "AU",
@@ -61,6 +57,9 @@ export const contactRegions: Record<ContactRegionId, ContactRegion> = {
     location: "17A Augusta Crescent, Sunshine North VIC 3020, Australia",
     mapTitle: "Map of the Australian contact address",
     isBusinessLocation: false,
+    documentTitle: "Contact Monorite International | Australia",
+    metaDescription: `Australian address and phone for contacting ${site.name} from outside India.`,
+    heading: "Contact details outside India",
   },
 };
 

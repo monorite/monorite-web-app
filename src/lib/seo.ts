@@ -6,6 +6,8 @@ interface PageSeoInput {
   description?: string;
   path?: string;
   noIndex?: boolean;
+  /** Use `title` as the full document title, without appending the site name. */
+  exactTitle?: boolean;
   /** Extra terms specific to this page, added on top of the site-wide
    * defaults below. No modern social platform (WhatsApp/Facebook/LinkedIn/
    * X/iMessage) reads meta keywords for link previews, and Google hasn't
@@ -57,12 +59,13 @@ export function buildMetadata({
   description,
   path = "",
   noIndex,
+  exactTitle,
   keywords,
   image,
   languages,
 }: PageSeoInput): Metadata {
   const url = `${site.url}${path}`;
-  const fullTitle = title === site.name ? title : `${title} | ${site.name}`;
+  const fullTitle = exactTitle || title === site.name ? title : `${title} | ${site.name}`;
   const desc = description ?? site.description;
   const socialImage = image ?? DEFAULT_OG_IMAGE;
 
@@ -96,7 +99,10 @@ export function buildMetadata({
     openGraph: {
       title: fullTitle,
       description: desc,
-      url,
+      // A noindex response has no canonical URL of its own. Omitting
+      // `url` here stops that response from advertising the homepage,
+      // which is what `path` falls back to when a caller passes none.
+      ...(noIndex ? {} : { url }),
       siteName: site.name,
       type: "website",
       images: [socialImage],

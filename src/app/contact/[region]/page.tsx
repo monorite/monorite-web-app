@@ -1,11 +1,6 @@
 import { notFound } from "next/navigation";
 import { buildMetadata } from "@/lib/seo";
-import { site } from "@/data/site";
-import {
-  contactLanguageAlternates,
-  contactRegionList,
-  getContactRegionBySlug,
-} from "@/data/contact-regions";
+import { contactRegionList, getContactRegionBySlug } from "@/data/contact-regions";
 import ContactPageView from "@/components/sections/ContactPageView";
 
 // Both slugs are known at build time. Unknown ones are real 404s, matching
@@ -20,21 +15,16 @@ export function generateMetadata({ params }: { params: { region: string } }) {
   const region = getContactRegionBySlug(params.region);
   if (!region) return buildMetadata({ title: "Contact", noIndex: true });
 
-  const description =
-    region.id === "IN"
-      ? `Contact ${site.name} in Rajahmundry, Andhra Pradesh, India.`
-      : `Australian contact details for ${site.name}: address and phone for visitors outside India.`;
-
   return buildMetadata({
-    title: "Contact",
-    description,
+    title: region.documentTitle,
+    description: region.metaDescription,
     path: region.path,
-    languages: contactLanguageAlternates,
+    exactTitle: true,
   });
 }
 
 export default function ContactRegionPage({ params }: { params: { region: string } }) {
   const region = getContactRegionBySlug(params.region);
   if (!region) notFound();
-  return <ContactPageView region={region} />;
+  return <ContactPageView region={region} heading={region.heading} />;
 }

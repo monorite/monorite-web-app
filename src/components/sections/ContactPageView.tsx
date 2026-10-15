@@ -7,7 +7,13 @@ import Reveal from "@/components/ui/Reveal";
 import ContactForm from "@/components/sections/ContactForm";
 import ContactRegionSwitch from "@/components/sections/ContactRegionSwitch";
 
-export default function ContactPageView({ region }: { region: ContactRegion }) {
+export default function ContactPageView({
+  region,
+  heading,
+}: {
+  region: ContactRegion;
+  heading: string;
+}) {
   const mapQuery = encodeURIComponent(region.location);
   const mapEmbedSrc = `https://maps.google.com/maps?q=${mapQuery}&z=15&output=embed`;
   const mapLinkHref = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
@@ -19,7 +25,7 @@ export default function ContactPageView({ region }: { region: ContactRegion }) {
           <Badge>Contact</Badge>
           <Reveal onMount delay={0.08}>
             <h1 className="mt-6 text-balance font-display text-display-lg font-semibold text-ink">
-              Let&apos;s find the friction in your business
+              {heading}
             </h1>
           </Reveal>
           <Reveal onMount delay={0.16}>

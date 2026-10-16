@@ -44,6 +44,8 @@ export interface ServiceLanding {
   primaryCta: string;
   secondaryCta: string;
   secondaryHref: string;
+  /** Animated, illustrative product demo shown beside the hero copy. */
+  heroDemo?: "ai-conversation" | "connected-software";
   servicesTitle: string;
   servicesIntro: string;
   services: LandingPoint[];
@@ -84,6 +86,7 @@ const aiSolutions: ServiceLanding = {
   primaryCta: "Discuss Your AI Project",
   secondaryCta: "Explore Our Work",
   secondaryHref: "/#work",
+  heroDemo: "ai-conversation",
   servicesTitle: "What we put AI to work on",
   servicesIntro:
     "Each of these is a specific job, not a blanket promise that software will run the business. We start from the enquiry, the call, or the handoff that is slipping today.",
@@ -281,6 +284,7 @@ const businessSoftware: ServiceLanding = {
   primaryCta: "Build Your Business Software",
   secondaryCta: "Explore Our Work",
   secondaryHref: "/#work",
+  heroDemo: "connected-software",
   servicesTitle: "Software we design around a workflow",
   servicesIntro:
     "Some of this is work we have already shipped. The rest is custom development for a specific business. The status is stated on each example below.",

@@ -45,7 +45,9 @@ export interface ServiceLanding {
   secondaryCta: string;
   secondaryHref: string;
   /** Animated, illustrative product demo shown beside the hero copy. */
-  heroDemo?: "ai-conversation" | "connected-software";
+  heroDemo?: "ai-solutions" | "connected-software";
+  /** Short capability labels shown under the hero copy. */
+  heroCapabilities?: string[];
   servicesTitle: string;
   servicesIntro: string;
   services: LandingPoint[];
@@ -80,13 +82,14 @@ const aiSolutions: ServiceLanding = {
     "workflow automation",
   ],
   badge: "AI Solutions",
-  h1: "AI for the chats, calls, and follow-ups your team keeps losing",
+  h1: "Make every enquiry count",
   description:
-    "Website chat, a voice receptionist, and follow-up that starts from the details you actually need. It connects to the tools you already use, and it hands a person the cases it should not decide.",
+    "Help customers get answers, capture enquiries, and automate the follow-up work that keeps your business moving.",
   primaryCta: "Discuss Your AI Project",
   secondaryCta: "Explore Our Work",
   secondaryHref: "/#work",
-  heroDemo: "ai-conversation",
+  heroDemo: "ai-solutions",
+  heroCapabilities: ["AI Website Chatbots", "AI Voice Agents", "Business Workflow Automation"],
   servicesTitle: "What we put AI to work on",
   servicesIntro:
     "Each of these is a specific job, not a blanket promise that software will run the business. We start from the enquiry, the call, or the handoff that is slipping today.",

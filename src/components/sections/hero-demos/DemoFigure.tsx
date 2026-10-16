@@ -19,12 +19,14 @@ const DemoFigure = forwardRef<
     caption: string;
     /** Shorter caption for narrow screens, so it stays on one line. */
     captionShort?: string;
+    /** Optional one-line status note under the caption (may contain links). */
+    note?: React.ReactNode;
     control: "pause" | "play" | "replay";
     onToggle: () => void;
     reduced: boolean;
     className?: string;
   }
->(function DemoFigure({ children, description, caption, captionShort, control, onToggle, reduced, className }, ref) {
+>(function DemoFigure({ children, description, caption, captionShort, note, control, onToggle, reduced, className }, ref) {
   const label =
     control === "pause" ? "Pause demo" : control === "play" ? "Play demo" : "Replay demo";
   const Icon = control === "pause" ? Pause : control === "play" ? Play : RotateCcw;
@@ -62,6 +64,11 @@ const DemoFigure = forwardRef<
           {control}
         </button>
       </figcaption>
+      {note && (
+        // Reserve two lines so switching between demos with different notes
+        // never shifts the content below.
+        <p className="mt-2 min-h-[42px] text-[13px] leading-relaxed text-ink-muted">{note}</p>
+      )}
     </figure>
   );
 });

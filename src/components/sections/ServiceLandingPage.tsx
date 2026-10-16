@@ -8,11 +8,21 @@ import Button from "@/components/ui/Button";
 import MagneticButton from "@/components/ui/MagneticButton";
 import FaqAccordion from "@/components/ui/FaqAccordion";
 import CTASection from "@/components/sections/CTASection";
+import AiChatDemo from "@/components/sections/hero-demos/AiChatDemo";
+import ConnectedSoftwareDemo from "@/components/sections/hero-demos/ConnectedSoftwareDemo";
+import { cn } from "@/lib/utils";
 
 const textLink =
   "text-sm font-medium text-ink-muted underline decoration-canvas-border underline-offset-4 transition-colors hover:text-ink";
 
+const heroDemos = {
+  "ai-conversation": AiChatDemo,
+  "connected-software": ConnectedSoftwareDemo,
+} as const;
+
 export default function ServiceLandingPage({ landing }: { landing: ServiceLanding }) {
+  const HeroDemo = landing.heroDemo ? heroDemos[landing.heroDemo] : null;
+
   return (
     <>
       <script
@@ -42,30 +52,48 @@ export default function ServiceLandingPage({ landing }: { landing: ServiceLandin
         }}
       />
 
-      <section className="pb-20 pt-40 md:pb-28 md:pt-48">
-        <Container>
-          <Link href="/#services" className={textLink}>
-            Services
-          </Link>
-          <div className="mt-6">
-            <Badge>{landing.badge}</Badge>
+      <section className={cn("pb-20 pt-40 md:pb-28 md:pt-48", HeroDemo && "overflow-x-clip lg:pt-44")}>
+        <Container
+          className={cn(
+            HeroDemo &&
+              "grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12 xl:gap-20",
+          )}
+        >
+          <div className="min-w-0">
+            <Link href="/#services" className={textLink}>
+              Services
+            </Link>
+            <div className="mt-6">
+              <Badge>{landing.badge}</Badge>
+            </div>
+            <Reveal onMount delay={0.08}>
+              <h1
+                className={cn(
+                  "mt-6 max-w-3xl text-balance font-display text-display-lg font-semibold text-ink",
+                  HeroDemo && "lg:text-[clamp(2.75rem,3.6vw,4.25rem)]",
+                )}
+              >
+                {landing.h1}
+              </h1>
+            </Reveal>
+            <Reveal onMount delay={0.16}>
+              <p className="mt-8 max-w-2xl text-balance text-lg leading-relaxed text-ink-muted">
+                {landing.description}
+              </p>
+            </Reveal>
+            <Reveal onMount delay={0.24} className="mt-10 flex flex-wrap items-center gap-4">
+              <MagneticButton href="/contact">{landing.primaryCta}</MagneticButton>
+              <Button href={landing.secondaryHref} variant="secondary">
+                {landing.secondaryCta}
+              </Button>
+            </Reveal>
           </div>
-          <Reveal onMount delay={0.08}>
-            <h1 className="mt-6 max-w-3xl text-balance font-display text-display-lg font-semibold text-ink">
-              {landing.h1}
-            </h1>
-          </Reveal>
-          <Reveal onMount delay={0.16}>
-            <p className="mt-8 max-w-2xl text-balance text-lg leading-relaxed text-ink-muted">
-              {landing.description}
-            </p>
-          </Reveal>
-          <Reveal onMount delay={0.24} className="mt-10 flex flex-wrap items-center gap-4">
-            <MagneticButton href="/contact">{landing.primaryCta}</MagneticButton>
-            <Button href={landing.secondaryHref} variant="secondary">
-              {landing.secondaryCta}
-            </Button>
-          </Reveal>
+
+          {HeroDemo && (
+            <Reveal onMount delay={0.3} className="min-w-0">
+              <HeroDemo />
+            </Reveal>
+          )}
         </Container>
       </section>
 

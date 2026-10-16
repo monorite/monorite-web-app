@@ -8,7 +8,7 @@ import Button from "@/components/ui/Button";
 import MagneticButton from "@/components/ui/MagneticButton";
 import FaqAccordion from "@/components/ui/FaqAccordion";
 import CTASection from "@/components/sections/CTASection";
-import AiChatDemo from "@/components/sections/hero-demos/AiChatDemo";
+import AiSolutionsDemo from "@/components/sections/hero-demos/AiSolutionsDemo";
 import ConnectedSoftwareDemo from "@/components/sections/hero-demos/ConnectedSoftwareDemo";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +16,7 @@ const textLink =
   "text-sm font-medium text-ink-muted underline decoration-canvas-border underline-offset-4 transition-colors hover:text-ink";
 
 const heroDemos = {
-  "ai-conversation": AiChatDemo,
+  "ai-solutions": AiSolutionsDemo,
   "connected-software": ConnectedSoftwareDemo,
 } as const;
 
@@ -67,11 +67,13 @@ export default function ServiceLandingPage({ landing }: { landing: ServiceLandin
               <Badge>{landing.badge}</Badge>
             </div>
             <Reveal onMount delay={0.08}>
+              {/* Plain string, not cn(): tailwind-merge doesn't know the custom
+                  `text-display-lg` font size and drops it as a "conflict" with
+                  `text-ink`, which collapsed the headline to 16px below lg. */}
               <h1
-                className={cn(
-                  "mt-6 max-w-3xl text-balance font-display text-display-lg font-semibold text-ink",
-                  HeroDemo && "lg:text-[clamp(2.75rem,3.6vw,4.25rem)]",
-                )}
+                className={`mt-6 max-w-3xl text-balance font-display text-display-lg font-semibold text-ink${
+                  HeroDemo ? " lg:text-[clamp(2.75rem,3.6vw,4.25rem)]" : ""
+                }`}
               >
                 {landing.h1}
               </h1>
@@ -81,6 +83,17 @@ export default function ServiceLandingPage({ landing }: { landing: ServiceLandin
                 {landing.description}
               </p>
             </Reveal>
+            {landing.heroCapabilities && (
+              <Reveal onMount delay={0.2}>
+                <ul aria-label="What we build" className="mt-6 flex flex-wrap gap-2">
+                  {landing.heroCapabilities.map((capability) => (
+                    <li key={capability}>
+                      <Badge>{capability}</Badge>
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            )}
             <Reveal onMount delay={0.24} className="mt-10 flex flex-wrap items-center gap-4">
               <MagneticButton href="/contact">{landing.primaryCta}</MagneticButton>
               <Button href={landing.secondaryHref} variant="secondary">

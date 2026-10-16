@@ -319,9 +319,40 @@
     animation: demo-caret 1s steps(1) infinite;
   }
 
+  /* Voice demo level bars: only animate while a line is being "spoken"
+     (data-active), so the finished state is still. */
+  @keyframes demo-wave {
+    0%,
+    100% {
+      transform: scaleY(0.4);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
+
+  [data-active] > .demo-wave {
+    animation: demo-wave 0.9s ease-in-out infinite;
+  }
+
+  /* AI Solutions mode switch: a short fade so the swap is not a hard cut. */
+  @keyframes demo-mode-enter {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .demo-mode-enter {
+    animation: demo-mode-enter 0.25s ease-out both;
+  }
+
   /* Pause control (DemoFigure) also freezes these decorative loops. */
   [data-demo-paused] .demo-dot,
-  [data-demo-paused] .demo-caret {
+  [data-demo-paused] .demo-caret,
+  [data-demo-paused] .demo-wave {
     animation-play-state: paused;
   }
 
